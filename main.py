@@ -3,7 +3,6 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QGraphicsView
 
-from fish import Fish
 from fish_manager import FishManager
 
 WIDTH = 1600
@@ -26,4 +25,3 @@ w.show()
 quentin = FishManager(scene)
 
 app.exec()
-

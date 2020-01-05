@@ -7,7 +7,9 @@ from fish import Fish
 
 TICK = 40
 
+
 class FishManager:
+
     def __init__(self, scene):
         self._fishes = []
         self.timer = QTimer()
