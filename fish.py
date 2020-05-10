@@ -16,7 +16,8 @@ class Fish(QGraphicsItem):
         self.setPos(self._x, self._y)
         self.setRotation(self._theta)
         self._color = color
-        self._speed = randint(1, 100)/100 * max_speed
+        self._speed = max_speed
+        # randint(1, 100)/100 * max_speed
 
         points = [QPointF(10, 0), QPointF(8, -3), QPointF(5, -5), QPointF(-10, 0), QPointF(5, 5), QPointF(8, 3)]
         polygon = QPolygonF(points)
@@ -37,6 +38,8 @@ class Fish(QGraphicsItem):
         self._repulsion_factor = 0.3
         self._random_factor = 0.2
 
+        self._obstacle_distance = 50
+
     def paint(self, painter, options, widget=None):
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(self._color)
@@ -46,7 +49,7 @@ class Fish(QGraphicsItem):
 
     def boundingRect(self):
         # return QRectF(-10, -10, 20, 20)
-        return QRectF(-100, -100, 200, 200)
+        return QRectF(-20, -20, 40, 40)
 
     def move(self):
         self.swim()
@@ -99,6 +102,18 @@ class Fish(QGraphicsItem):
         self._speed += factor * self._speed * ((randint(0, 100)/50) - 1)
         if self._speed > self._max_speed:
             self._speed = self._max_speed
+
+    def obstacles(self, obstacles: List["Obstacle"] ):
+        for obs in obstacles:
+            distance = math.hypot(self._x - obs.pos[0], self._y - obs.pos[1]) - 5
+            if distance <= self._obstacle_distance:
+                factor = math.fabs(((distance/self._obstacle_distance - 1)**2))
+                speed_vector = [self._speed*math.cos(self._theta), self._speed*math.sin(self._theta)]
+                repulsion = [-(obs.pos[0] - self._x), -(obs.pos[1] - self._y)]
+                new_speed_vector = \
+                    [(1-factor)*speed_vector[0] + factor*repulsion[0], (1-factor)*speed_vector[1] + factor*repulsion[1]]
+                self._speed = math.hypot(new_speed_vector[0], new_speed_vector[1])
+                self._theta = math.atan(new_speed_vector[1]/new_speed_vector[0]) * 180/math.pi
 
     @property
     def theta(self):

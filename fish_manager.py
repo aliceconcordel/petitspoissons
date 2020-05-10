@@ -3,6 +3,7 @@ from random import randint
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QColor
 
+from obstacle import Obstacle
 from fish import Fish
 from utils import random_name
 
@@ -13,6 +14,7 @@ class FishManager:
 
     def __init__(self, scene):
         self._fishes = []
+        self._obstacles = []
         self.timer = QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(TICK)
@@ -26,6 +28,11 @@ class FishManager:
             self.add_fish(fish)
             fish.set_theta(randint(0, 360))
             # fish.set_speed(10)
+
+        for i in range(11):
+            color = QColor(255, 255, 255)
+            obstacle = Obstacle(randint(0, scene.width()), randint(0, scene.height()), color)
+            self.add_obstacle(obstacle)
 
     def update(self):
         # print('--------------------------- pouet')
@@ -42,8 +49,13 @@ class FishManager:
             fish.cohesive(neighbours)
             fish.repulsive(crowders)
             fish.random()
+            fish.obstacles(self._obstacles)
             fish.move()
 
     def add_fish(self, fish):
         self._fishes.append(fish)
         self._scene.addItem(fish)
+
+    def add_obstacle(self, obstacle):
+        self._obstacles.append(obstacle)
+        self._scene.addItem(obstacle)
