@@ -19,24 +19,28 @@ class FishManager:
 
         self._scene = scene
 
-        for i in range(1, 100):
+        for i in range(1, 101):
             color = QColor(randint(0,255), randint(0,255), randint(0,255))
-            fish = Fish(randint(0, scene.width()), randint(0, scene.height()), randint(1, 5), color, name=random_name())
+            max_speed = 10
+            fish = Fish(randint(0, scene.width()), randint(0, scene.height()), color, max_speed, name=random_name())
             self.add_fish(fish)
             fish.set_theta(randint(0, 360))
+            # fish.set_speed(10)
 
     def update(self):
+        # print('--------------------------- pouet')
         for fish in self._fishes:
             neighbours = []
             crowders = []
             for i in self._fishes:
-                close, too_close = fish.nearby(i)
-                if close:
-                    neighbours.append(i)
-                if too_close:
-                    crowders.append(i)
+                if i != fish:
+                    close, too_close = fish.nearby(i)
+                    if close:
+                        neighbours.append(i)
+                    if too_close:
+                        crowders.append(i)
             fish.cohesive(neighbours)
-            # fish.repulsive(crowders)
+            fish.repulsive(crowders)
             fish.random()
             fish.move()
 

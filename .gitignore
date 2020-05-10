@@ -1,0 +1,5 @@
+PoissonsRouges.iml
+*/*.pyc
+*/*.xml
+*/__pycache__
+.idea
